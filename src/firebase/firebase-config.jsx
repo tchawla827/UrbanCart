@@ -5,16 +5,15 @@ import { getFirestore } from "firebase/firestore"; // If using Firestore
 import { getStorage } from "firebase/storage"; // If using Firebase Storage
 import { getAnalytics } from "firebase/analytics"; // Optional for tracking
 
-// ✅ Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyALjY1Nm3XJf64tUIsAfVMfG8JaDsnyFS8",
-  authDomain: "urbancart-8b9ab.firebaseapp.com",
-  projectId: "urbancart-8b9ab",
-  storageBucket: "urbancart-8b9ab.appspot.com",  // ✅ Fixed Storage URL
-  messagingSenderId: "524880359066",
-  appId: "1:524880359066:web:729f9fe4877a7f042e3923",
-  measurementId: "G-17WXDL5664"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: "urbancart-6834a.firebaseapp.com",
+  projectId: "urbancart-6834a",
+  storageBucket: "urbancart-6834a.appspot.com",
+  messagingSenderId: "341179639992",
+  appId: "1:341179639992:web:1af58789b635f3e7e3ac4d"
 };
+
 
 // ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
