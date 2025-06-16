@@ -51,10 +51,9 @@ cd UrbanCart
 npm install
 ```
 
-3️⃣ **Create a `.env` File** and add Firebase & OpenAI keys:
+3️⃣ **Create a `.env` File** and add your Firebase key:
 ```
 VITE_APP_FIREBASE_API_KEY=your_firebase_api_key
-VITE_OPENAI_API_KEY=your_openai_api_key
 ```
 
 4️⃣ **Start the Development Server**
@@ -73,9 +72,8 @@ UrbanCart can be deployed easily on **Render**.
 3. Connect your repository and configure the following settings:
    - **Build Command:** `npm run build`
    - **Publish Directory:** `dist/`
-4. Add the required environment variables in the **Environment** section:
+4. Add the required environment variable in the **Environment** section:
    - `VITE_APP_FIREBASE_API_KEY`
-   - `VITE_OPENAI_API_KEY`
 5. Click **Create Web Service**. Render will build and deploy your static site automatically.
 
 ## 🐳 Docker
