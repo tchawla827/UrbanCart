@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useFormik } from 'formik';
 import FormErrorMessage from '../components/FormErrorMessage';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/firebase-config'; // ✅ Ensuring correct Firebase imports
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -19,6 +19,20 @@ const validate = values => {
 export function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    // Check redirect result for Google sign-in
+    useEffect(() => {
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result && result.user) {
+                    dispatch(loginUser(result.user.providerData));
+                    navigate("/page/1");
+                }
+            })
+            .catch((error) => {
+                if (error) console.error("Google Redirect Error:", error);
+            });
+    }, []);
 
     // ✅ Email/Password Login Function
     const login = async (email, password) => {
@@ -39,12 +53,20 @@ export function Login() {
         try {
             const result = await signInWithPopup(auth, googleProvider);
             console.log("Google Sign-In Success:", result.user);
-            alert(`Welcome ${result.user.displayName}!`);
             dispatch(loginUser(result.user.providerData));
             navigate("/page/1");
         } catch (error) {
-            console.error("Google Sign-In Error:", error);
-            alert(error.message);
+            if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/popup-blocked') {
+                try {
+                    await signInWithRedirect(auth, googleProvider);
+                } catch (redirectError) {
+                    console.error('Google Sign-In Redirect Error:', redirectError);
+                    alert(redirectError.message);
+                }
+            } else {
+                console.error("Google Sign-In Error:", error);
+                alert(error.message);
+            }
         }
     };
 
