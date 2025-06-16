@@ -1,5 +1,7 @@
 # UrbanCart 🛒
 
+**🌐 [Live Demo](https://urbancart-kv4z.onrender.com/)**
+
 UrbanCart is a modern online shopping platform built with React and Firebase. It offers a smooth shopping experience with a robust cart, secure checkout and user authentication.
 
 ![GitHub stars](https://img.shields.io/github/stars/tchawla827/UrbanCart?style=social)
