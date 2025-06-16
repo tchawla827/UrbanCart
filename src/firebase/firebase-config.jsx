@@ -6,10 +6,10 @@ import { getStorage } from "firebase/storage"; // If using Firebase Storage
 import { getAnalytics } from "firebase/analytics"; // Optional for tracking
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
-  authDomain: "urbancart-6834a.firebaseapp.com",
-  projectId: "urbancart-6834a",
-  storageBucket: "urbancart-6834a.appspot.com",
+  apiKey: "AIzaSyAGv_4-eC84hxyPNifqrAKvuOeIg3Q_GOY",
+  authDomain: "urbancart-683a4.firebaseapp.com",
+  projectId: "urbancart-683a4",
+  storageBucket: "urbancart-683a4.firebasestorage.app",
   messagingSenderId: "341179639992",
   appId: "1:341179639992:web:1af58789b635f3e7e3ac4d"
 };
