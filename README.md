@@ -87,6 +87,14 @@ UrbanCart can be deployed easily on platforms like **Netlify, Vercel, or Firebas
    vercel
    ```
 
+## 🐳 Docker
+To build and run the project using Docker:
+```sh
+docker build -t urbancart .
+docker run -p 3000:80 urbancart
+```
+
+
 ---
 
 ## 📸 Screenshots
