@@ -65,27 +65,17 @@ npm run dev
 ---
 
 ## 🚀 Deployment
-UrbanCart can be deployed easily on platforms like **Netlify, Vercel, or Firebase Hosting**.
+UrbanCart can be deployed easily on **Render**.
 
-### **Deploy on Netlify**
+### **Deploy on Render**
 1. Build the project:
    ```sh
    npm run build
    ```
-2. Drag and drop the `dist/` folder to **Netlify** or use the CLI:
-   ```sh
-   netlify deploy
-   ```
-
-### **Deploy on Vercel**
-1. Install Vercel CLI:
-   ```sh
-   npm install -g vercel
-   ```
-2. Deploy:
-   ```sh
-   vercel
-   ```
+2. Push your code to a Git repository.
+3. In Render, create a new **Static Site**, connect your repository, and set the following:
+   - **Build Command:** `npm run build`
+   - **Publish Directory:** `dist/`
 
 ## 🐳 Docker
 To build and run the project using Docker:
