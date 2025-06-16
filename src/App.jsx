@@ -7,7 +7,6 @@ import ProductDetails from './screens/ProductDetails';
 import ShoppingCart from './screens/ShoppingCart';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import Main from './screens/Main';
 import { Login } from './screens/login';
 import { SignUp } from './screens/SignUp';
 import ProtectedRoute from './screens/protected_route/ProtectedRoute';
