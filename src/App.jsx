@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { loginUser, userState } from './redux/slices/user';
 import { Checkout } from './screens/Checkout';
 import { Thankyou } from './screens/Thankyou';
+import Contact from './screens/Contact';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -115,6 +116,16 @@ function App() {
                 component={Thankyou}
                 user={user}
               />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <>
+              <Navbar />
+              <Contact />
               <Footer />
             </>
           }

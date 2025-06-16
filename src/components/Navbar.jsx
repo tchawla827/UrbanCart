@@ -8,7 +8,8 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
 
 const menuItems = [
-  { name: 'Home' }
+  { name: 'Home', link: '/page/1' },
+  { name: 'Contact', link: '/contact' },
 ];
 
 const Navbar = () => {
@@ -71,7 +72,7 @@ const Navbar = () => {
           <ul className="ml-12 inline-flex space-x-8">
             {menuItems.map((item) => (
               <li key={item.name}>
-                <Link to="/page/1" className="text-sm font-semibold text-gray-800 hover:text-gray-900">
+                <Link to={item.link} className="text-sm font-semibold text-gray-800 hover:text-gray-900">
                   {item.name}
                 </Link>
               </li>
@@ -152,7 +153,7 @@ const Navbar = () => {
                 <div className="mt-6">
                   <nav className="grid gap-y-4">
                     {menuItems.map((item) => (
-                      <Link key={item.name} to="/page/1" className="flex items-center p-3 text-sm font-semibold rounded-md hover:bg-gray-50">
+                      <Link key={item.name} to={item.link} className="flex items-center p-3 text-sm font-semibold rounded-md hover:bg-gray-50">
                         <span className="ml-3 text-gray-900">{item.name}</span>
                         <ChevronRight className="ml-3 h-4 w-4" />
                       </Link>
