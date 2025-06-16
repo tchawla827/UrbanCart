@@ -84,6 +84,10 @@ docker build -t urbancart .
 docker run -p 3000:80 urbancart
 ```
 
+The Docker image ships with a custom **nginx** configuration (`nginx.conf`) that
+redirects all unknown paths to `index.html`. This allows React Router to handle
+client-side routes even when the page is refreshed.
+
 
 ---
 
