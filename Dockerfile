@@ -17,6 +17,9 @@ RUN npm run build
 # Use a lightweight nginx image to serve the built files
 FROM nginx:alpine
 
+# Provide custom nginx configuration to handle client-side routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy build output to nginx html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
