@@ -6,7 +6,7 @@ import { getStorage } from "firebase/storage"; // If using Firebase Storage
 import { getAnalytics } from "firebase/analytics"; // Optional for tracking
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
   authDomain: "urbancart-6834a.firebaseapp.com",
   projectId: "urbancart-6834a",
   storageBucket: "urbancart-6834a.appspot.com",
