@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
@@ -23,7 +23,7 @@ function Main() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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'
+        'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         'model': 'gpt-3.5-turbo',
