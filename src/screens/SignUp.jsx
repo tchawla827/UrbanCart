@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useFormik } from 'formik';
 import FormErrorMessage from '../components/FormErrorMessage';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/firebase-config';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -27,6 +27,18 @@ const validate = values => {
 export function SignUp() {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result && result.user) {
+                    navigate("/page/1");
+                }
+            })
+            .catch((error) => {
+                if (error) console.error("Google Redirect Error:", error);
+            });
+    }, []);
+
     // ✅ Email/Password Registration
     const register = async (email, password) => {
         try {
@@ -44,11 +56,19 @@ export function SignUp() {
         try {
             const result = await signInWithPopup(auth, googleProvider);
             console.log("Google Sign-Up Success:", result.user);
-            alert(`Welcome ${result.user.displayName}!`);
-            navigate("/page/1"); // ✅ Redirect after Google Signup
+            navigate("/page/1");
         } catch (error) {
-            console.error("Google Sign-Up Error:", error);
-            alert(error.message);
+            if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/popup-blocked') {
+                try {
+                    await signInWithRedirect(auth, googleProvider);
+                } catch (redirectError) {
+                    console.error('Google Sign-Up Redirect Error:', redirectError);
+                    alert(redirectError.message);
+                }
+            } else {
+                console.error("Google Sign-Up Error:", error);
+                alert(error.message);
+            }
         }
     };
 
