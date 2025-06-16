@@ -53,7 +53,7 @@ npm install
 
 3️⃣ **Create a `.env` File** and add Firebase & API Keys:
 ```
-REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+VITE_APP_FIREBASE_API_KEY=your_firebase_api_key
 REACT_APP_OPENAI_API_KEY=your_openai_api_key
 ```
 
