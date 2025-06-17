@@ -87,7 +87,15 @@ UrbanCart can be deployed easily on **Render**.
    - **Publish Directory:** `dist/`
 4. Add the required environment variable in the **Environment** section:
    - `VITE_APP_FIREBASE_API_KEY`
-5. Click **Create Web Service**. Render will build and deploy your static site automatically.
+5. Commit a `static.json` file at the project root so Render can rewrite all requests to `index.html`:
+   ```json
+   {
+     "redirects": [
+       { "source": "/*", "destination": "/index.html", "statusCode": 200 }
+     ]
+   }
+   ```
+6. Click **Create Web Service**. Render will build and deploy your static site automatically.
 
 ### Docker
 To build and run the project using Docker:
