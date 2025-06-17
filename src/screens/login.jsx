@@ -78,15 +78,15 @@ export function Login() {
     });
 
     return (
-        <section>
+        <section className="bg-white dark:bg-gray-900">
             <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
                 <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
-                    <h2 className="text-center text-2xl font-bold leading-tight text-black">
+                    <h2 className="text-center text-2xl font-bold leading-tight text-black dark:text-white">
                         Sign in to your account
                     </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
+                    <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
                         Don&apos;t have an account?{' '}
-                        <Link to="/signup" className="font-semibold text-black transition-all duration-200 hover:underline">
+                        <Link to="/signup" className="font-semibold text-black dark:text-white transition-all duration-200 hover:underline">
                             Create a free account
                         </Link>
                     </p>
@@ -94,10 +94,10 @@ export function Login() {
                     {/* ✅ Email/Password Login Form */}
                     <form onSubmit={formik.handleSubmit} className="mt-8 space-y-5">
                         <div>
-                            <label className="text-base font-medium text-gray-900">Email address</label>
+                            <label className="text-base font-medium text-gray-900 dark:text-gray-200">Email address</label>
                             <div className="mt-2">
                                 <input
-                                    className="w-full h-10 rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:ring-gray-400"
+                                    className="w-full h-10 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:ring-gray-400"
                                     type="email"
                                     name="email"
                                     placeholder="Email"
@@ -109,10 +109,10 @@ export function Login() {
                         </div>
 
                         <div>
-                            <label className="text-base font-medium text-gray-900">Password</label>
+                            <label className="text-base font-medium text-gray-900 dark:text-gray-200">Password</label>
                             <div className="mt-2">
                                 <input
-                                    className="w-full h-10 rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:ring-gray-400"
+                                    className="w-full h-10 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:ring-gray-400"
                                     type="password"
                                     name="password"
                                     placeholder="Password"
@@ -127,7 +127,7 @@ export function Login() {
                         <div>
                             <button
                                 type="submit"
-                                className="w-full flex items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-white font-semibold hover:bg-black/80"
+                                className="w-full flex items-center justify-center rounded-md bg-black dark:bg-gray-700 px-3.5 py-2.5 text-white font-semibold hover:bg-black/80 dark:hover:bg-gray-600"
                             >
                                 Get started <ArrowRight className="ml-2" size={16} />
                             </button>
@@ -139,7 +139,7 @@ export function Login() {
                         <button
                             type="button"
                             onClick={handleGoogleSignIn} // ✅ Google Sign-In Button now works
-                            className="w-full flex items-center justify-center rounded-md border border-gray-400 bg-white px-3.5 py-2.5 font-semibold text-gray-700 hover:bg-gray-100"
+                            className="w-full flex items-center justify-center rounded-md border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 px-3.5 py-2.5 font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                             <svg className="h-6 w-6 text-red-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.907 8.907 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z"></path>
