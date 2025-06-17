@@ -43,18 +43,18 @@ const Navbar = () => {
   };
 
   return (
-    <div className="relative w-full bg-white dark:bg-gray-800">
-      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
+    <div className="sticky top-0 z-50 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         
-        {/* ✅ Enlarged SVG Logo & Reduced Space Between Name & Logo */}
-        <div className="inline-flex items-center space-x-1">  {/* Reduced space */}
-          <span>
+        {/* Logo & Brand */}
+        <div className="inline-flex items-center space-x-2">
+          <div className="flex-shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="100"  // Increased width
-              height="100" // Increased height
+              width="40"
+              height="40"
               viewBox="0 0 180 60"
-              className="text-black scale-125" // Slight scale increase for better visibility
+              className="text-gray-900 dark:text-white transition-colors duration-200"
               aria-labelledby="urbanCartTitle"
               role="img"
             >
@@ -66,116 +66,159 @@ const Navbar = () => {
               <circle cx="38" cy="40" r="6" fill="currentColor" />
               <circle cx="62" cy="40" r="6" fill="currentColor" />
             </svg>
+          </div>
+          <span className="font-bold text-xl text-gray-900 dark:text-white transition-colors duration-200">
+            UrbanCart
           </span>
-          <span className="font-bold text-lg dark:text-white">UrbanCart</span>  {/* Reduced text size slightly */}
         </div>
 
-        <div className="hidden lg:block">
-          <ul className="ml-12 inline-flex space-x-8">
-            {menuItems.map((item) => (
-              <li key={item.name}>
-                <Link to={item.link} className="text-sm font-semibold text-gray-800 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white">
-                  {item.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex lg:items-center lg:space-x-8">
+          {menuItems.map((item) => (
+            <Link 
+              key={item.name}
+              to={item.link} 
+              className="relative text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-green-600 dark:after:bg-green-400 after:transition-all after:duration-300 hover:after:w-full"
+            >
+              {item.name}
+            </Link>
+          ))}
+        </nav>
 
-        <div className="flex grow justify-end">
+        {/* Search Bar */}
+        <div className="flex-1 max-w-md mx-8">
           <input
             onChange={(e) => handleSearch(e.target.value)}
-            className="h-10 w-[250px] rounded-md bg-gray-100 dark:bg-gray-700 px-3 py-2 text-sm placeholder:text-gray-600 dark:placeholder:text-gray-300 focus:ring-1 focus:ring-black/30"
+            className="w-full h-10 rounded-full bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:border-transparent transition-all duration-200"
             type="text"
-            placeholder="Search"
+            placeholder="Search products..."
+            aria-label="Search products"
           />
         </div>
 
-        {/* CART BUTTON */}
-        <button
-          onClick={handleGoToCart}
-          type="button"
-          className="relative ml-8 bg-black dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-white rounded-full shadow-sm hover:bg-black/80 dark:hover:bg-gray-600"
-        >
-          <ShoppingCart />
-          {cartItemsCount > 0 && (
-            <span className="absolute w-[20px] h-[20px] top-[-5px] right-[-5px] rounded-full bg-green-500 text-white text-xs text-center">
-              {cartItemsCount}
-            </span>
-          )}
-        </button>
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-3">
+          {/* Cart Button */}
+          <button
+            onClick={handleGoToCart}
+            type="button"
+            className="relative p-2.5 bg-gray-900 dark:bg-gray-700 text-white rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-gray-400"
+            aria-label={`Shopping cart with ${cartItemsCount} items`}
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-green-500 text-white text-xs font-semibold flex items-center justify-center animate-pulse">
+                {cartItemsCount}
+              </span>
+            )}
+          </button>
 
-        {/* LOGIN / LOGOUT BUTTON */}
-        <button
-          onClick={handleLogout}
-          type="button"
-          className="ml-8 bg-black dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-white rounded-full shadow-sm hover:bg-black/80 dark:hover:bg-gray-600"
-        >
-          {isLoggedIn ? "Logout" : "Login"}
-        </button>
+          {/* Login/Logout Button */}
+          <button
+            onClick={handleLogout}
+            type="button"
+            className="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-gray-400"
+          >
+            {isLoggedIn ? "Logout" : "Login"}
+          </button>
 
-        {/* THEME TOGGLE */}
-        <button
-          onClick={toggleTheme}
-          type="button"
-          className="ml-4 rounded-full p-2 bg-gray-200 dark:bg-gray-700"
-        >
-          {theme === 'dark' ? <Sun className="h-5 w-5 text-yellow-400" /> : <Moon className="h-5 w-5" />}
-        </button>
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            type="button"
+            className="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-gray-400"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? 
+              <Sun className="h-5 w-5 text-yellow-500" /> : 
+              <Moon className="h-5 w-5 text-gray-700" />
+            }
+          </button>
 
-        {/* MOBILE MENU TOGGLE */}
-        <div className="ml-2 lg:hidden">
-          <Menu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={toggleMenu}
+            className="lg:hidden p-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            aria-label="Open menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
         </div>
+      </div>
 
-        {/* MOBILE MENU */}
-        {isMenuOpen && (
-          <div className="absolute inset-x-0 top-0 z-50 p-2 transform lg:hidden">
-            <div className="divide-y-2 divide-gray-50 dark:divide-gray-700 bg-white dark:bg-gray-800 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-              <div className="px-5 pb-6 pt-5">
-                <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center space-x-1">
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="100"
-                        height="100"
-                        viewBox="0 0 180 60"
-                        className="text-black scale-125"
-                      >
-                        <path d="M30 20h30l10 20H40l-5-10h-5z"
-                          fill="none" stroke="currentColor"
-                          strokeWidth="3" strokeLinejoin="round"
-                        />
-                        <circle cx="38" cy="40" r="6" fill="currentColor" />
-                        <circle cx="62" cy="40" r="6" fill="currentColor" />
-                      </svg>
-                    </span>
-                    <span className="font-bold text-lg dark:text-white">UrbanCart</span>
-                  </div>
-                  <button
-                    onClick={toggleMenu}
-                    className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:hover:bg-gray-700"
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div 
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+            onClick={toggleMenu}
+          />
+          <div className={`fixed right-0 top-0 h-full w-80 max-w-sm transform bg-white dark:bg-gray-900 shadow-2xl transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className="flex h-full flex-col">
+              {/* Mobile Menu Header */}
+              <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 p-6">
+                <div className="flex items-center space-x-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 180 60"
+                    className="text-gray-900 dark:text-white"
                   >
-                    <X className="h-6 w-6" />
-                  </button>
+                    <path d="M30 20h30l10 20H40l-5-10h-5z"
+                      fill="none" stroke="currentColor"
+                      strokeWidth="3" strokeLinejoin="round"
+                    />
+                    <circle cx="38" cy="40" r="6" fill="currentColor" />
+                    <circle cx="62" cy="40" r="6" fill="currentColor" />
+                  </svg>
+                  <span className="font-bold text-lg text-gray-900 dark:text-white">UrbanCart</span>
                 </div>
+                <button
+                  onClick={toggleMenu}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors duration-200"
+                  aria-label="Close menu"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
 
-                <div className="mt-6">
-                  <nav className="grid gap-y-4">
-                    {menuItems.map((item) => (
-                      <Link key={item.name} to={item.link} className="flex items-center p-3 text-sm font-semibold rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <span className="ml-3 text-gray-900 dark:text-gray-200">{item.name}</span>
-                        <ChevronRight className="ml-3 h-4 w-4" />
-                      </Link>
-                    ))}
-                  </nav>
+              {/* Mobile Menu Navigation */}
+              <nav className="flex-1 px-6 py-6 space-y-2">
+                {menuItems.map((item) => (
+                  <Link 
+                    key={item.name}
+                    to={item.link} 
+                    onClick={toggleMenu}
+                    className="flex items-center justify-between p-3 text-base font-semibold text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                  >
+                    <span>{item.name}</span>
+                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Mobile Menu Footer */}
+              <div className="border-t border-gray-200 dark:border-gray-700 p-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {isLoggedIn ? "Signed in" : "Not signed in"}
+                  </span>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      toggleMenu();
+                    }}
+                    className="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white text-sm font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors duration-200"
+                  >
+                    {isLoggedIn ? "Logout" : "Login"}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
