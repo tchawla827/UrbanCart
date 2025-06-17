@@ -258,10 +258,10 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
                 </div>
                 <hr className="my-8" />
                 <div className="lg:grid lg:grid-cols-12 lg:gap-x-6">
-                    <div className={isAttached ? "space-y-6 divide-y w-[216px] lg:block fixed top-0" : "space-y-6 divide-y lg:col-span-2 lg:block"}>
+                    <div className={isAttached ? "space-y-6 divide-y divide-gray-200 dark:divide-gray-700 w-[216px] lg:block fixed top-0" : "space-y-6 divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-2 lg:block"}>
                         {filters.map((filter) => (
                             <div key={filter.id} className="pt-6">
-                                <h3 className="text-lg font-semibold text-gray-900">{filter.name}</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{filter.name}</h3>
                                 <ul className="mt-4 h-[600px] overflow-scroll">
                                     {filter.options.map((option, index) => (
                                         <li key={index} className="flex items-center justify-between py-2">
@@ -272,11 +272,11 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
                                                     name={option.value}
                                                     defaultValue={option.value}
                                                     type="checkbox"
-                                                    className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+                                                    className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-black dark:bg-gray-800 focus:ring-black dark:focus:ring-gray-100"
                                                 />
                                                 <label
                                                     htmlFor={`${filter.id}-${option.value}`}
-                                                    className="ml-3 text-sm font-medium text-gray-900"
+                                                    className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-100"
                                                 >
                                                     {option.value}
                                                 </label>
