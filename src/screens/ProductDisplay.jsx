@@ -139,7 +139,7 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         console.log("scrollTop", document.documentElement.scrollTop);
 
         try {
-            if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
+            if (window.innerHeight + document.documentElement.scrollTop + 100 >= document.documentElement.scrollHeight) {
                 setPage((prev) => prev + 1);
             }
         }
