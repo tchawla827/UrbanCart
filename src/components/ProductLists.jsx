@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProductSkeletonLoader from './ProductSkeletonLoader';
 import ProductCards from './ProductCards';
 import { useSelector } from 'react-redux';
@@ -22,26 +22,43 @@ function ProductLists({ addToCart, setCartItems, cartItems, page }) {
 
     if (allProductData.length === 0) {
         return (
-            <div className="rounded-lg border-2 border-dashed lg:col-span-10 lg:col-start-3 lg:h-full mx-auto grid w-full max-w-full items-center space-y-4 px-10 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-2 xl:grid-cols-4">
-                {
-                    Array.from({ length: 10 }).map((_, index) => (
-                        <ProductSkeletonLoader key={index} />
-                    ))
-                }
-
+            <div className="rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50/50 to-white dark:from-gray-900/50 dark:to-gray-800/50 lg:col-span-10 lg:col-start-3 lg:h-full mx-auto grid w-full max-w-full items-center space-y-6 px-8 py-12 md:grid-cols-2 md:gap-8 md:space-y-0 lg:grid-cols-2 xl:grid-cols-4 backdrop-blur-sm">
+                {Array.from({ length: 10 }).map((_, index) => (
+                    <div
+                        key={index}
+                        className="opacity-0 animate-pulse"
+                        style={{
+                            animationDelay: `${index * 100}ms`,
+                            animationFillMode: 'forwards',
+                        }}
+                    >
+                        <ProductSkeletonLoader />
+                    </div>
+                ))}
             </div>
-        )
-    }
-    else {
+        );
+    } else {
         return (
-            <div className="rounded-lg border-2 border-dashed lg:col-span-10 lg:col-start-3 lg:h-full mx-auto grid w-full max-w-full items-center space-y-4 px-10 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-2 xl:grid-cols-4">
-                {allProductData.slice(0, 8 * page).map((item, index) =>
-                (
-                    <ProductCards addToCartToast={addToCart} key={index} cartItems={cartItems} setCartItems={setCartItems} item={item} handleProductClick={handleProductClick} />
-                )
-                )}
+            <div className="rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50/30 to-white/80 dark:from-gray-900/30 dark:to-gray-800/50 lg:col-span-10 lg:col-start-3 lg:h-full mx-auto grid w-full max-w-full items-start space-y-6 px-8 py-12 md:grid-cols-2 md:gap-8 md:space-y-0 lg:grid-cols-2 xl:grid-cols-4 backdrop-blur-sm shadow-lg dark:shadow-2xl transition-all duration-500">
+                {allProductData.slice(0, 8 * page).map((item, index) => (
+                    <div
+                        key={index}
+                        className="opacity-0 translate-y-4 transition-all duration-500 ease-out"
+                        style={{
+                            animationDelay: `${index * 150}ms`,
+                            animationFillMode: 'forwards',
+                            animation: `fadeInUp 0.6s ease-out ${index * 150}ms forwards`,
+                        }}
+                    >
+                        <ProductCards
+                            addToCartToast={addToCart}
+                            item={item}
+                            handleProductClick={handleProductClick}
+                        />
+                    </div>
+                ))}
             </div>
-        )
+        );
     }
 
 
