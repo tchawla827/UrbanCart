@@ -60,8 +60,7 @@ function ProductLists({ addToCart, setCartItems, cartItems, page }) {
             </div>
         );
     }
-
-
 }
 
 export default ProductLists
+

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { ChevronDown } from 'lucide-react'
 import ProductLists from '../components/ProductLists'
 import { CheckCircle, X } from 'lucide-react'
@@ -49,6 +49,7 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
     const [lastSelectedCategory, setLastSelectedCategory] = useState("")
     const [page, setPage] = useState(1)
     const [sortBy, setSortBy] = useState("");
+    const loader = useRef(null);
 
     //All UseEffect Calls
 
@@ -132,27 +133,19 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
             containerId: "Sort Toast",
         })
     }
-
-    const handleInfiniteScroll = async () => {
-        console.log("scrollHeight", document.documentElement.scrollHeight);
-        console.log("innerHeight", window, innerHeight);
-        console.log("scrollTop", document.documentElement.scrollTop);
-
-        try {
-            if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
                 setPage((prev) => prev + 1);
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
+        });
+        if (loader.current) observer.observe(loader.current);
+        return () => {
+            if (loader.current) observer.unobserve(loader.current);
+        };
+    }, []);
 
-    }
 
-    useEffect(() => {
-        window.addEventListener("scroll", handleInfiniteScroll)
-        return () => window.removeEventListener("scroll", handleInfiniteScroll)
-    }, [])
 
     return (
         <section className="w-full">
@@ -288,6 +281,7 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
                         ))}
                     </div>
                     <ProductLists page={page} addToCart={addToCart} cartItems={cartItems} setCartItems={setCartItems} />
+                    <div ref={loader}></div>
                 </div>
                 {/* <ProductPagination page={page} setPage={setPage} totalPages={selectedCategories.length === 0 ? totalPages : categoryTotalPages} /> */}
             </div>
@@ -296,3 +290,4 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
 }
 
 export default ProductDisplay
+
