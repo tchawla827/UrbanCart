@@ -62,7 +62,6 @@ function App() {
                 cartItems={cartItems}
                 setCartItems={setCartItems}
               />
-              <Footer />
             </>
           }
         />
@@ -141,7 +140,6 @@ function App() {
                 cartItems={cartItems}
                 setCartItems={setCartItems}
               />
-              <Footer />
             </>
           }
         />

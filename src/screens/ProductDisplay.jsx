@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { ChevronDown } from 'lucide-react'
 import ProductLists from '../components/ProductLists'
 import { CheckCircle, X } from 'lucide-react'
@@ -7,7 +7,8 @@ import { AlertTriangle } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { addCategoryProducts, addProducts, removeCategoryProducts, sortByHighToLow, sortByLowToHigh, sortByRating } from '../redux/slices/products';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Footer from '../components/Footer';
 
 const filters = [
     {
@@ -133,26 +134,26 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         })
     }
 
-    const handleInfiniteScroll = async () => {
-        console.log("scrollHeight", document.documentElement.scrollHeight);
-        console.log("innerHeight", window, innerHeight);
-        console.log("scrollTop", document.documentElement.scrollTop);
-
-        try {
-            if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
-                setPage((prev) => prev + 1);
-            }
-        }
-        catch (e) {
-            console.log(e);
-        }
-
-    }
+    const loader = useRef(null);
+    const products = useSelector((state) => state.product.products);
+    const totalPages = Math.ceil(products.length / 8);
 
     useEffect(() => {
-        window.addEventListener("scroll", handleInfiniteScroll)
-        return () => window.removeEventListener("scroll", handleInfiniteScroll)
-    }, [])
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const first = entries[0];
+                if (first.isIntersecting && page < totalPages) {
+                    setPage((prev) => prev + 1);
+                }
+            },
+            { rootMargin: '200px' }
+        );
+        const current = loader.current;
+        if (current) observer.observe(current);
+        return () => {
+            if (current) observer.unobserve(current);
+        };
+    }, [page, totalPages]);
 
     return (
         <section className="w-full">
@@ -289,7 +290,9 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
                     </div>
                     <ProductLists page={page} addToCart={addToCart} cartItems={cartItems} setCartItems={setCartItems} />
                 </div>
+                <div ref={loader}></div>
                 {/* <ProductPagination page={page} setPage={setPage} totalPages={selectedCategories.length === 0 ? totalPages : categoryTotalPages} /> */}
+                {page >= totalPages && <Footer />}
             </div>
         </section>
     )
