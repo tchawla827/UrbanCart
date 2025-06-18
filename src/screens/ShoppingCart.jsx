@@ -46,7 +46,7 @@ function ShoppingCart() {
                 </h1>
                 <form className="min-h-screen mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
                     <section aria-labelledby="cart-heading" className="rounded-lg bg-white lg:col-span-8">
-                        <ul role="list" className="grid grid-cols-12 gap-2">
+                        <ul role="list" className="flex flex-col gap-4">
                             {Object.keys(cartItems).map((product, productIdx) => (
                                 <ShoppingCartProductCard handleProductClick={handleProductClick} key={productIdx} product={cartItems[product]} />
                             ))}
