@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Trash } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeCartItem, increaseCartItem, decreaseCartItem } from '../redux/slices/cart';
@@ -8,9 +8,6 @@ function ShoppingCartProductCard({ product, handleProductClick }) {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
 
-  useEffect(() => {
-    console.log(product.id, 'rendering from shopping cart');
-  }, [product]);
 
   const removeItem = () => {
     dispatch(removeCartItem({ id: product.id }));
@@ -31,8 +28,8 @@ function ShoppingCartProductCard({ product, handleProductClick }) {
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
-      <div className="flex flex-col sm:flex-row gap-4">
+    <li className="col-span-12 w-full bg-card border border-border rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full">
         {/* Product Image */}
         <div
           onClick={() => handleProductClick(product.id)}
@@ -46,7 +43,7 @@ function ShoppingCartProductCard({ product, handleProductClick }) {
         </div>
 
         {/* Product Details */}
-        <div className="flex-1 space-y-3">
+        <div className="flex-1 flex flex-col justify-between space-y-3">
           <div
             onClick={() => handleProductClick(product.id)}
             className="cursor-pointer group"
@@ -59,7 +56,6 @@ function ShoppingCartProductCard({ product, handleProductClick }) {
             </p>
           </div>
 
-          {/* Product Attributes */}
           {(product.color || product.size) && (
             <div className="flex gap-4 text-sm text-muted-foreground">
               {product.color && <span>Color: {product.color}</span>}
@@ -67,7 +63,6 @@ function ShoppingCartProductCard({ product, handleProductClick }) {
             </div>
           )}
 
-          {/* Pricing */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm text-muted-foreground line-through">
               ${Math.floor(product.price / (1 - product.discountPercentage / 100))}
@@ -82,48 +77,46 @@ function ShoppingCartProductCard({ product, handleProductClick }) {
             )}
           </div>
         </div>
-      </div>
 
-      {/* Quantity Controls and Remove Button */}
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
-        {/* Quantity Controls */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-muted-foreground mr-2">Qty:</span>
-          <div className="flex items-center border border-border rounded-lg overflow-hidden">
-            <button
-              onClick={decreaseItem}
-              type="button"
-              className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-muted/80 text-foreground font-medium transition-colors duration-200 hover:scale-110 active:scale-95"
-              aria-label="Decrease quantity"
-            >
-              -
-            </button>
-            <div className="w-12 h-8 flex items-center justify-center bg-background border-x border-border text-sm font-medium text-foreground">
-              {product.quantity}
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:ml-4 mt-4 sm:mt-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-muted-foreground mr-2 hidden sm:inline">Qty:</span>
+            <div className="flex items-center border border-border rounded-lg overflow-hidden">
+              <button
+                onClick={decreaseItem}
+                type="button"
+                className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-muted/80 text-foreground font-medium transition-colors duration-200 active:scale-95"
+                aria-label="Decrease quantity"
+              >
+                -
+              </button>
+              <div className="w-12 h-8 flex items-center justify-center bg-background border-x border-border text-sm font-medium text-foreground">
+                {product.quantity}
+              </div>
+              <button
+                onClick={increaseItem}
+                type="button"
+                className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-muted/80 text-foreground font-medium transition-colors duration-200 active:scale-95"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
             </div>
-            <button
-              onClick={increaseItem}
-              type="button"
-              className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-muted/80 text-foreground font-medium transition-colors duration-200 hover:scale-110 active:scale-95"
-              aria-label="Increase quantity"
-            >
-              +
-            </button>
           </div>
-        </div>
 
-        {/* Remove Button */}
-        <button
-          onClick={removeItem}
-          type="button"
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-105 active:scale-95"
-          aria-label="Remove item from cart"
-        >
-          <Trash size={16} />
-          <span className="text-sm font-medium">Remove</span>
-        </button>
+          <button
+            onClick={removeItem}
+            type="button"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-destructive hover:bg-destructive/10 transition-all duration-200 active:scale-95"
+            aria-label="Remove item from cart"
+          >
+            <Trash size={16} />
+            <span className="text-sm font-medium">Remove</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </li>
   );
 }
 
