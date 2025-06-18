@@ -1,104 +1,130 @@
-import React, { useEffect } from 'react'
-import { Heart, Trash } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react';
+import { Trash } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { removeCartItem, increaseCartItem, decreaseCartItem } from '../redux/slices/cart';
-import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from 'sonner';
 
 function ShoppingCartProductCard({ product, handleProductClick }) {
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
-    const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.cartItems);
+  useEffect(() => {
+    console.log(product.id, 'rendering from shopping cart');
+  }, [product]);
 
-    useEffect(() => {
-        console.log(product.id, "rendering from shopping cart")
-    }, [product])
+  const removeItem = () => {
+    dispatch(removeCartItem({ id: product.id }));
+    toast.error('Item Removed');
+  };
 
-    const removeItem = () => {
-        dispatch(removeCartItem({ id: product.id }))
-        toast.error("Item Removed")
+  const increaseItem = () => {
+    dispatch(increaseCartItem({ id: product.id }));
+  };
+
+  const decreaseItem = () => {
+    const tempQuantity = cartItems[product.id].quantity;
+    if (tempQuantity === 1) {
+      removeItem();
+    } else {
+      dispatch(decreaseCartItem({ id: product.id }));
     }
+  };
 
-    const increaseItem = () => {
-        dispatch(increaseCartItem({ id: product.id }));
-    }
-
-    const decreaseItem = () => {
-        const tempQuantity = cartItems[product.id].quantity;
-        if (tempQuantity === 1) {
-            removeItem();
-        }
-        else {
-            dispatch(decreaseCartItem({ id: product.id }))
-        }
-    }
-
-    return (
-        <div className="col-span-6 border-2 py-[10px] px-[20px] ">
-            <li className="flex">
-                <div onClick={() => { handleProductClick(product.id) }} className="cursor-pointer flex-shrink-0">
-                    <img
-                        src={product.thumbnail}
-                        alt={product.title}
-                        className="sm:h-38 sm:w-38 h-24 w-24 rounded-md object-contain object-center"
-                    />
-                </div>
-                <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                    <div className="relative pr-9 sm:grid sm:grid-cols-1 sm:gap-x-6 sm:pr-0">
-                        <div>
-                            <div onClick={() => { handleProductClick(product.id) }} className="cursor-pointer flex-col justify-between">
-                                <h3 className="text-md">
-                                    <a href={product.href} className="font-semibold text-black">
-                                        {product.title}
-                                    </a>
-                                </h3>
-                                <h2 className="text-[10px]">
-                                    {product.description}
-                                </h2>
-                            </div>
-                            <div className="mt-1 flex text-sm">
-                                <p className="text-sm text-gray-500">{product.color}</p>
-                                {product.size ? (
-                                    <p className="ml-4 border-l border-gray-200 pl-4 text-sm text-gray-500">
-                                        {product.size}
-                                    </p>
-                                ) : null}
-                            </div>
-                            <div className="mt-1 flex items-end">
-                                <p className="text-xs font-medium text-gray-500 line-through">
-                                    ${Math.floor((product.price) / ((1 - ((product.discountPercentage) / 100))))}
-                                </p>
-                                <p className="text-sm font-medium text-gray-900">
-                                    &nbsp;&nbsp; ${product.price}
-                                </p>
-                                &nbsp;&nbsp;
-                                <p className="text-sm font-medium text-green-500">{product.discount}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <div className="mb-2 flex">
-                <div className="min-w-24 flex">
-                    <button onClick={(e) => decreaseItem()} type="button" className="h-7 w-7">
-                        -
-                    </button>
-                    <div className="mx-1 h-7 w-9 rounded-md border text-center">
-                        {product.quantity}
-                    </div>
-                    <button onClick={(e) => { increaseItem() }} type="button" className="flex h-7 w-7 items-center justify-center">
-                        +
-                    </button>
-                </div>
-                <div className="ml-6 flex text-sm">
-                    <button onClick={(e) => removeItem()} type="button" className="rounded-lg justify-center hover:bg-red-200 flex items-center space-x-1 px-4 py-1">
-                        <Trash size={12} className="text-red-500" />
-                        <span className="text-xs font-medium text-red-500">Remove</span>
-                    </button>
-                </div>
-            </div>
+  return (
+    <div className="bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
+      <div className="flex flex-col sm:flex-row gap-4">
+        {/* Product Image */}
+        <div
+          onClick={() => handleProductClick(product.id)}
+          className="cursor-pointer flex-shrink-0 group"
+        >
+          <img
+            src={product.thumbnail}
+            alt={product.title}
+            className="h-24 w-24 sm:h-32 sm:w-32 rounded-lg object-cover object-center border border-border group-hover:scale-105 transition-transform duration-300"
+          />
         </div>
-    )
+
+        {/* Product Details */}
+        <div className="flex-1 space-y-3">
+          <div
+            onClick={() => handleProductClick(product.id)}
+            className="cursor-pointer group"
+          >
+            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2">
+              {product.title}
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+              {product.description}
+            </p>
+          </div>
+
+          {/* Product Attributes */}
+          {(product.color || product.size) && (
+            <div className="flex gap-4 text-sm text-muted-foreground">
+              {product.color && <span>Color: {product.color}</span>}
+              {product.size && <span>Size: {product.size}</span>}
+            </div>
+          )}
+
+          {/* Pricing */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground line-through">
+              ${Math.floor(product.price / (1 - product.discountPercentage / 100))}
+            </span>
+            <span className="text-lg font-bold text-foreground">
+              ${product.price}
+            </span>
+            {product.discount && (
+              <span className="text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-md">
+                {product.discount}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Quantity Controls and Remove Button */}
+      <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+        {/* Quantity Controls */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-muted-foreground mr-2">Qty:</span>
+          <div className="flex items-center border border-border rounded-lg overflow-hidden">
+            <button
+              onClick={decreaseItem}
+              type="button"
+              className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-muted/80 text-foreground font-medium transition-colors duration-200 hover:scale-110 active:scale-95"
+              aria-label="Decrease quantity"
+            >
+              -
+            </button>
+            <div className="w-12 h-8 flex items-center justify-center bg-background border-x border-border text-sm font-medium text-foreground">
+              {product.quantity}
+            </div>
+            <button
+              onClick={increaseItem}
+              type="button"
+              className="w-8 h-8 flex items-center justify-center bg-muted hover:bg-muted/80 text-foreground font-medium transition-colors duration-200 hover:scale-110 active:scale-95"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Remove Button */}
+        <button
+          onClick={removeItem}
+          type="button"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-105 active:scale-95"
+          aria-label="Remove item from cart"
+        >
+          <Trash size={16} />
+          <span className="text-sm font-medium">Remove</span>
+        </button>
+      </div>
+    </div>
+  );
 }
 
-export default ShoppingCartProductCard
+export default ShoppingCartProductCard;
