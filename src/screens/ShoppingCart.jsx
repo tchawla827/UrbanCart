@@ -1,5 +1,6 @@
 import React from 'react'
 import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'sonner';
 import "react-toastify/dist/ReactToastify.css";
 import { AlertTriangle, X, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +39,7 @@ function ShoppingCart() {
                 pauseOnFocusLoss={false}
                 pauseOnHover={false}
             />
+            <Toaster richColors />
             <div className="mx-auto max-w-2xl py-8 lg:max-w-7xl">
                 <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                     Shopping Cart
