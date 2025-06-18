@@ -1,61 +1,64 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  cartItems: {},
+  totalAmount: 0,
+  discountAmount: 0,
+  finalAmount: 0,
+};
+
 export const cartSlice = createSlice({
-    initialState: {
-        cartItems: {},
-        totalAmount: 0,
-        discountAmount: 0,
-        finalAmount: 0
+  name: "cart",
+  initialState,
+  reducers: {
+    addToCart: (state, action) => {
+      const item = action.payload;
+      state.cartItems[item.id] = {
+        ...item.data,
+        quantity: item.quantity,
+        totalAmount: item.totalAmount,
+        discountAmount: item.discountAmount,
+        finalAmount: item.finalAmount,
+      };
+      state.totalAmount += Math.floor(item.totalAmount);
+      state.discountAmount += Math.floor(item.discountAmount);
+      state.finalAmount += Math.floor(item.finalAmount);
     },
-    name: 'cart',
-    reducers: {
-        addToCart: (state, action) => {
-            state.cartItems[action.payload.id] = { ...action.payload.data, quantity: action.payload.quantity }
-            state.totalAmount = state.totalAmount + Math.floor(action.payload.totalAmount);
-            state.discountAmount = state.discountAmount + Math.floor(action.payload.discountAmount);
-            state.finalAmount = state.finalAmount + Math.floor(action.payload.finalAmount);
-        },
-        removeCartItem: (state, action) => {
-            if (state.cartItems[action.payload.id]) {
-                const tempCartItems = state.cartItems;
-                const item = tempCartItems[action.payload.id]
-                const quantity = item.quantity;
-                const totalAmount = Math.floor(item.price / (1-(item.discountPercentage/100)));
-                const discountAmount = Math.floor(item.price * (item.discountPercentage/100)/ (1-(item.discountPercentage/100)));
-                const finalAmount = item.price;
-                state.totalAmount = state.totalAmount - quantity*totalAmount;
-                state.discountAmount = state.discountAmount - quantity*discountAmount;
-                state.finalAmount = state.finalAmount - quantity*finalAmount;
-                delete tempCartItems[action.payload.id];
-                state.cartItems = tempCartItems;
-            }
-        },
-        increaseCartItem: (state, action) => {
-            if (state.cartItems[action.payload.id]) {
-                const item =state.cartItems[action.payload.id]
-                const totalAmount = Math.floor(item.price / (1-(item.discountPercentage/100)));
-                const discountAmount = Math.floor(item.price * (item.discountPercentage/100)/ (1-(item.discountPercentage/100)));
-                const finalAmount = item.price;
-                state.totalAmount = state.totalAmount + totalAmount;
-                state.discountAmount = state.discountAmount + discountAmount;
-                state.finalAmount = state.finalAmount + finalAmount;
-                state.cartItems[action.payload.id].quantity = state.cartItems[action.payload.id].quantity + 1;
-            }
-        },
-        decreaseCartItem: (state, action) => {
-            if (state.cartItems[action.payload.id]) {
-                const item =state.cartItems[action.payload.id]
-                const totalAmount = Math.floor(item.price / (1-(item.discountPercentage/100)));
-                const discountAmount = Math.floor(item.price * (item.discountPercentage/100)/ (1-(item.discountPercentage/100)));
-                const finalAmount = item.price;
-                state.totalAmount = state.totalAmount - totalAmount;
-                state.discountAmount = state.discountAmount - discountAmount;
-                state.finalAmount = state.finalAmount - finalAmount;
-                state.cartItems[action.payload.id].quantity = state.cartItems[action.payload.id].quantity - 1;
-            }
-        },
-    }
-})
+    removeCartItem: (state, action) => {
+      const item = state.cartItems[action.payload.id];
+      if (item) {
+        const quantity = item.quantity;
+        const totalAmount = Math.floor(item.totalAmount);
+        const discountAmount = Math.floor(item.discountAmount);
+        const finalAmount = Math.floor(item.finalAmount / quantity);
+        state.totalAmount -= quantity * totalAmount;
+        state.discountAmount -= quantity * discountAmount;
+        state.finalAmount -= quantity * finalAmount;
+        delete state.cartItems[action.payload.id];
+      }
+    },
+    increaseCartItem: (state, action) => {
+      const item = state.cartItems[action.payload.id];
+      if (item) {
+        item.quantity += 1;
+        item.finalAmount = item.quantity * (item.totalAmount - item.discountAmount);
+        state.totalAmount += Math.floor(item.totalAmount);
+        state.discountAmount += Math.floor(item.discountAmount);
+        state.finalAmount += Math.floor(item.totalAmount - item.discountAmount);
+      }
+    },
+    decreaseCartItem: (state, action) => {
+      const item = state.cartItems[action.payload.id];
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+        item.finalAmount = item.quantity * (item.totalAmount - item.discountAmount);
+        state.totalAmount -= Math.floor(item.totalAmount);
+        state.discountAmount -= Math.floor(item.discountAmount);
+        state.finalAmount -= Math.floor(item.totalAmount - item.discountAmount);
+      }
+    },
+  },
+});
 
 export const { addToCart, removeCartItem, increaseCartItem, decreaseCartItem } = cartSlice.actions;
 export default cartSlice.reducer
