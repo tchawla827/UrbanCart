@@ -41,8 +41,10 @@ function ProductLists({ addToCart, setCartItems, cartItems, page }) {
     } else {
         return (
             <div className="rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50/30 to-white/80 dark:from-gray-900/30 dark:to-gray-800/50 lg:col-span-10 lg:col-start-3 lg:h-full mx-auto grid w-full max-w-full items-start space-y-6 px-8 py-12 md:grid-cols-2 md:gap-8 md:space-y-0 lg:grid-cols-2 xl:grid-cols-4 backdrop-blur-sm shadow-lg dark:shadow-2xl transition-all duration-500">
+
                 {allProductData.slice(0, PAGE_SIZE * page).map((item, index) => {
                     const delay = (index % PAGE_SIZE) * 100;
+
                     return (
                         <div
                             key={index}
@@ -50,7 +52,9 @@ function ProductLists({ addToCart, setCartItems, cartItems, page }) {
                             style={{
                                 animationDelay: `${delay}ms`,
                                 animationFillMode: 'forwards',
+
                                 animation: `fadeInUp 0.5s ease-out ${delay}ms forwards`,
+
                             }}
                         >
                             <ProductCards
