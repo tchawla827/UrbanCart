@@ -235,17 +235,17 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
                     <ul className="space-y-3">
                       {filter.options.map((option) => (
                         <li key={option.id} className="group">
-                          <div className="flex items-center space-x-3 rounded-lg p-2 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <div className="flex items-center space-x-3 rounded-lg p-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 animate-slide-in-left">
                             <input
                               onChange={(e) => handleCategoryToggle(e, option.value)}
                               id={option.id.toString()}
                               name={option.value}
                               type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
+                              className="peer h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105 transition-transform"
                             />
                             <label
                               htmlFor={option.id.toString()}
-                              className="flex-1 cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 capitalize"
+                              className="flex-1 cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 capitalize transition-all duration-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 peer-checked:bg-gradient-to-r peer-checked:from-blue-600 peer-checked:to-purple-600 peer-checked:text-white peer-checked:px-2 peer-checked:py-1 peer-checked:rounded-md peer-checked:shadow-md"
                             >
                               {option.value.replace('-', ' ')}
                             </label>
