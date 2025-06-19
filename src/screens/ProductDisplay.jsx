@@ -5,7 +5,14 @@ import { CheckCircle, X, AlertTriangle } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useDispatch } from 'react-redux'
-import { addCategoryProducts, setProducts, removeCategoryProducts, sortByHighToLow, sortByLowToHigh, sortByRating } from '../redux/slices/products'
+import {
+  addCategoryProducts,
+  setProducts,
+  removeCategoryProducts,
+  sortByHighToLow,
+  sortByLowToHigh,
+  sortByRating
+} from '../redux/slices/products'
 
 const filters = [
   {
@@ -38,22 +45,12 @@ const filters = [
 
 function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, categoryRemoved }) {
   const dispatch = useDispatch()
-  const [isAttached, setIsAttached] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState([])
   const [lastSelectedCategory, setLastSelectedCategory] = useState('')
   const [page, setPage] = useState(1)
   const [sortBy, setSortBy] = useState('')
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset
-      setIsAttached(scrollTop > 250)
-    }
-    if (window.pageYOffset > 250) setIsAttached(true)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
+  // fetch-all or by-category
   useEffect(() => {
     if (selectedCategories.length === 0) {
       fetchAllData()
@@ -70,33 +67,39 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
     } else if (value === 'Sort By: Rating') {
       dispatch(sortByRating())
     }
-    sortedToast(value)
+    toast.success(`Items ${value}`, { containerId: 'Sort Toast' })
   }
 
   const fetchAllData = async () => {
     try {
-      const response = await fetch('https://dummyjson.com/products?limit=0')
-      const jsonData = await response.json()
-      dispatch(setProducts(jsonData.products))
-    } catch (error) {
-      console.error('Error fetching data:', error)
+      const res = await fetch('https://dummyjson.com/products?limit=0')
+      const json = await res.json()
+      dispatch(setProducts(json.products))
+    } catch (err) {
+      console.error(err)
     }
   }
 
   const fetchDataCategory = async () => {
     try {
-      const response = await fetch(`https://dummyjson.com/products/category/${lastSelectedCategory}?limit=0`)
-      const jsonData = await response.json()
-      dispatch(addCategoryProducts({ data: jsonData.products, isFirst: selectedCategories.length === 1 }))
-    } catch (error) {
-      console.error('Error fetching data:', error)
+      const res = await fetch(
+        `https://dummyjson.com/products/category/${lastSelectedCategory}?limit=0`
+      )
+      const json = await res.json()
+      dispatch(
+        addCategoryProducts({
+          data: json.products,
+          isFirst: selectedCategories.length === 1
+        })
+      )
+    } catch (err) {
+      console.error(err)
     }
   }
 
   const removeCategory = (value) => {
     dispatch(removeCategoryProducts(value))
-    const updatedSelectedCategories = selectedCategories.filter((x) => x !== value)
-    setSelectedCategories(updatedSelectedCategories)
+    setSelectedCategories((prev) => prev.filter((x) => x !== value))
     setLastSelectedCategory('')
     categoryRemoved()
   }
@@ -104,7 +107,7 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
   const handleCategoryToggle = (e, value) => {
     if (e.target.checked) {
       setLastSelectedCategory(value)
-      setSelectedCategories([...selectedCategories, value])
+      setSelectedCategories((prev) => [...prev, value])
       categoryAdded()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
@@ -112,29 +115,23 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
     }
   }
 
-  const sortedToast = (message) => {
-    toast.success(`Items ${message}`, {
-      containerId: 'Sort Toast'
-    })
-  }
-
-  const handleInfiniteScroll = () => {
-    try {
-      if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
-        setPage((prev) => prev + 1)
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
+  // infinite scroll
   useEffect(() => {
-    window.addEventListener('scroll', handleInfiniteScroll)
-    return () => window.removeEventListener('scroll', handleInfiniteScroll)
+    const handleInfinite = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 1 >=
+        document.documentElement.scrollHeight
+      ) {
+        setPage((p) => p + 1)
+      }
+    }
+    window.addEventListener('scroll', handleInfinite)
+    return () => window.removeEventListener('scroll', handleInfinite)
   }, [])
 
   return (
-    <section className="w-full min-h-screen bg-gradient-to-br from-gray-50/80 via-white to-gray-100/60 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <section className="pt-16 w-full min-h-screen bg-gradient-to-br from-gray-50/80 via-white to-gray-100/60 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+      {/* Toasts */}
       <ToastContainer
         containerId="AddToCart"
         autoClose={2000}
@@ -142,7 +139,6 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         toastClassName="rounded-lg border-l-4 border-green-500 bg-white dark:bg-gray-800 p-4 shadow-lg backdrop-blur-sm"
         bodyStyle={{ padding: 0, margin: 0 }}
         icon={<CheckCircle className="h-6 w-6 text-green-600" />}
-        style={{ height: 100 }}
         closeButton={
           <div className="justify-center items-center">
             <X className="h-6 w-6 cursor-pointer text-green-900 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors" />
@@ -160,12 +156,6 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         toastClassName="rounded-lg border-l-4 border-green-500 bg-white dark:bg-gray-800 p-4 shadow-lg backdrop-blur-sm"
         bodyStyle={{ padding: 0, margin: 0 }}
         icon={<CheckCircle className="h-6 w-6 text-green-600" />}
-        style={{ height: 100 }}
-        closeButton={
-          <div className="justify-center items-center">
-            <X className="h-6 w-6 cursor-pointer text-green-900 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors" />
-          </div>
-        }
         pauseOnFocusLoss={false}
         pauseOnHover={false}
       />
@@ -174,15 +164,9 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         containerId="CategoryRemoved"
         autoClose={2000}
         className="w-1/5 justify-center items-center m-0"
-        toastClassName="rounded-lg border-l-4 border-red-500 bg-white dark:bg-gray-800 justify-center items-center h-[10px] shadow-lg backdrop-blur-sm"
+        toastClassName="rounded-lg border-l-4 border-red-500 bg-white dark:bg-gray-800 p-4 shadow-lg backdrop-blur-sm"
         bodyStyle={{ padding: 0, margin: 0 }}
         icon={<AlertTriangle className="h-[20px] w-[20px] text-red-600" />}
-        style={{ height: 100 }}
-        closeButton={
-          <div className="justify-center items-center">
-            <X className="h-6 w-6 cursor-pointer text-red-600 hover:text-red-700 transition-colors" />
-          </div>
-        }
         pauseOnFocusLoss={false}
         pauseOnHover={false}
       />
@@ -193,18 +177,13 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         toastClassName="rounded-lg border-l-4 border-green-500 bg-white dark:bg-gray-800 p-4 shadow-lg backdrop-blur-sm"
         bodyStyle={{ padding: 0, margin: 0 }}
         icon={<CheckCircle className="h-6 w-6 text-green-600" />}
-        style={{ height: 100 }}
-        closeButton={
-          <div className="justify-center items-center">
-            <X className="h-6 w-6 cursor-pointer text-green-900 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors" />
-          </div>
-        }
         pauseOnFocusLoss={false}
         pauseOnHover={false}
         enableMultiContainer
       />
 
       <div className="mx-auto max-w-[1500px] px-4 py-8 lg:px-10">
+        {/* Header + sort controls */}
         <div className="md:flex md:flex-row md:items-start md:justify-between">
           <div className="animate-fade-in">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
@@ -214,7 +193,6 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
               Discover our curated collection
             </p>
           </div>
-
           <div className="mt-6 flex flex-wrap items-center gap-3 pt-2 md:mt-0 md:pt-0">
             <select
               value={sortBy}
@@ -224,43 +202,29 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
               }}
               className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-900 dark:text-gray-100 shadow-sm transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
             >
-              <option className="w-[200px]">Sort By: Relevance</option>
+              <option>Sort By: Relevance</option>
               <option>Sort By: High to Low</option>
               <option>Sort By: Low to High</option>
               <option>Sort By: Rating</option>
             </select>
-
-            <button
-              type="button"
-              className="inline-flex items-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:hidden"
-            >
-              Category <ChevronDown className="ml-2 h-4 w-4 transition-transform duration-200" />
+            {/* mobile filter buttons */}
+            <button className="inline-flex items-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:hidden">
+              Category <ChevronDown className="ml-2 h-4 w-4" />
             </button>
-            <button
-              type="button"
-              className="inline-flex items-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:hidden"
-            >
-              Color <ChevronDown className="ml-2 h-4 w-4 transition-transform duration-200" />
+            <button className="inline-flex items-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:hidden">
+              Color <ChevronDown className="ml-2 h-4 w-4" />
             </button>
-            <button
-              type="button"
-              className="inline-flex items-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:hidden"
-            >
-              Size <ChevronDown className="ml-2 h-4 w-4 transition-transform duration-200" />
+            <button className="inline-flex items-center rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 lg:hidden">
+              Size <ChevronDown className="ml-2 h-4 w-4" />
             </button>
           </div>
         </div>
 
-        <div className="my-8 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"></div>
+        <div className="my-8 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div
-            className={`${
-              isAttached
-                ? 'fixed top-6 z-20 w-64 transform transition-all duration-300 ease-in-out'
-                : 'lg:col-span-2 transform transition-all duration-300 ease-in-out'
-            } space-y-6`}
-          >
+          {/* ←── pure-CSS sticky sidebar */}
+          <div className="lg:col-span-2 self-start sticky top-16 space-y-6 z-20">
             <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 p-6 shadow-lg backdrop-blur-sm">
               {filters.map((filter) => (
                 <div key={filter.id} className="space-y-4">
@@ -269,16 +233,15 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
                   </h3>
                   <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
                     <ul className="space-y-3">
-                      {filter.options.map((option, index) => (
-                        <li key={index} className="group">
+                      {filter.options.map((option) => (
+                        <li key={option.id} className="group">
                           <div className="flex items-center space-x-3 rounded-lg p-2 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                             <input
                               onChange={(e) => handleCategoryToggle(e, option.value)}
                               id={option.id.toString()}
                               name={option.value}
-                              defaultValue={option.value}
                               type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-blue-600 transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
+                              className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:scale-105"
                             />
                             <label
                               htmlFor={option.id.toString()}
@@ -296,10 +259,14 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
             </div>
           </div>
 
-          <div className="lg:col-span-10 lg:col-start-3">
-            <div className="animate-fade-in">
-              <ProductLists page={page} addToCart={addToCart} cartItems={cartItems} setCartItems={setCartItems} />
-            </div>
+          {/* main product grid */}
+          <div className="lg:col-span-10 lg:col-start-3 animate-fade-in">
+            <ProductLists
+              page={page}
+              addToCart={addToCart}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+            />
           </div>
         </div>
       </div>
@@ -308,4 +275,3 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
 }
 
 export default ProductDisplay
-
