@@ -37,7 +37,7 @@ export function Checkout() {
     const options = {
       key: 'rzp_test_nrHrsMJkNeOshh',
       currency: 'INR',
-      amount: amount,
+      amount: Math.round(amount * 100),
       name: 'Welcome to e-com',
       description: 'Thank you for purchasing :)',
       handler: function (response) {
