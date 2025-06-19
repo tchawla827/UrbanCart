@@ -1,244 +1,310 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
-import ProductDetailsSkeleton from '../components/ProductDetailsSkeleton';
-import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
-import { CheckCircle, X } from 'lucide-react'
-import { useSelector, useDispatch } from 'react-redux';
-import { addToCart } from '../redux/slices/cart';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'
+import ProductDetailsSkeleton from '../components/ProductDetailsSkeleton'
+import { ToastContainer } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css"
+import { CheckCircle, X, Plus, Minus, Star } from 'lucide-react'
+import { useSelector, useDispatch } from 'react-redux'
+import { addToCart } from '../redux/slices/cart'
 
 function ProductDetails({ cartItems, setCartItems, addToCartToast }) {
-    
-    const [productDetails, setProductDetails] = useState();
+    const [productDetails, setProductDetails] = useState(null)
     const [itemQuantity, setItemQuantity] = useState(1)
-    
-    const tempCartItems = useSelector((state) => state.cart.cartItems);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+
+    const tempCartItems = useSelector((state) => state.cart.cartItems)
     const dispatch = useDispatch()
 
     const { id } = useParams()
 
     const fetchAllProductDetails = async () => {
         try {
-            const response = await fetch(`https://dummyjson.com/products/${id}`);
-            const jsonData = await response.json();
-            console.log(jsonData)
-            setProductDetails(jsonData);
+            const response = await fetch(`https://dummyjson.com/products/${id}`)
+            const jsonData = await response.json()
+            setProductDetails(jsonData)
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error)
         }
-    };
+    }
 
     useEffect(() => {
-        fetchAllProductDetails();
+        fetchAllProductDetails()
     }, [id])
 
-    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-    const navigate = useNavigate();
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+    const navigate = useNavigate()
 
     const addItemToCart = () => {
-        if(!isLoggedIn){
-            navigate("/login");
-        }
-        else{
-            if (tempCartItems[id]) {
-                let tempQuantity = tempCartItems[id].quantity;
-                dispatch(addToCart({ data: productDetails, quantity: tempQuantity + itemQuantity, id: id , totalAmount : itemQuantity*Math.floor((productDetails.price)/(1-(productDetails.discountPercentage/100))), discountAmount: itemQuantity*Math.floor((productDetails.price * (productDetails.discountPercentage/100))/(1-(productDetails.discountPercentage/100))), finalAmount : itemQuantity*productDetails.price}));
+        if (!isLoggedIn) {
+            navigate('/login')
+        } else {
+            if (tempCartItems[Number(id)]) {
+                const tempQuantity = tempCartItems[Number(id)].quantity
+                dispatch(
+                    addToCart({
+                        data: productDetails,
+                        quantity: tempQuantity + itemQuantity,
+                        id: Number(id),
+                        totalAmount:
+                            itemQuantity *
+                            Math.floor(
+                                productDetails.price /
+                                    (1 - productDetails.discountPercentage / 100)
+                            ),
+                        discountAmount:
+                            itemQuantity *
+                            Math.floor(
+                                (productDetails.price *
+                                    (productDetails.discountPercentage / 100)) /
+                                    (1 -
+                                        productDetails.discountPercentage / 100)
+                            ),
+                        finalAmount: itemQuantity * productDetails.price,
+                    })
+                )
+                addToCartToast()
+            } else {
+                dispatch(
+                    addToCart({
+                        data: productDetails,
+                        quantity: itemQuantity,
+                        id: Number(id),
+                        totalAmount:
+                            itemQuantity *
+                            Math.floor(
+                                productDetails.price /
+                                    (1 - productDetails.discountPercentage / 100)
+                            ),
+                        discountAmount:
+                            itemQuantity *
+                            Math.floor(
+                                (productDetails.price *
+                                    (productDetails.discountPercentage / 100)) /
+                                    (1 -
+                                        productDetails.discountPercentage / 100)
+                            ),
+                        finalAmount: itemQuantity * productDetails.price,
+                    })
+                )
                 addToCartToast()
             }
-            else {
-                addToCartToast()
-                dispatch(addToCart({ data: productDetails, quantity: itemQuantity, id: id , totalAmount : itemQuantity*Math.floor((productDetails.price)/(1-(productDetails.discountPercentage/100))), discountAmount: itemQuantity*Math.floor((productDetails.price * (productDetails.discountPercentage/100))/(1-(productDetails.discountPercentage/100))), finalAmount : itemQuantity*productDetails.price }));
-            }
         }
-        
     }
 
     if (!productDetails) {
-        return (
-            <ProductDetailsSkeleton />
-        )
+        return <ProductDetailsSkeleton />
     }
+
+    const originalPrice = Math.floor(
+        productDetails.price /
+            (1 - productDetails.discountPercentage / 100)
+    )
+
     return (
-        <div className="mx-auto max-w-7xl px-4 md:px-8 2xl:px-16">
+        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
             <ToastContainer
                 autoClose={2000}
                 className="w-1/4 justify-center items-center m-0"
-                toastClassName="rounded-md border-l-4 border-green-500 bg-white p-4"
+                toastClassName="rounded-lg border-l-4 border-green-500 bg-white dark:bg-gray-800 p-4 shadow-lg"
                 bodyStyle={{ padding: 0, margin: 0 }}
                 icon={<CheckCircle className="h-6 w-6 text-green-600" />}
                 style={{ height: 100 }}
                 closeButton={
                     <div className="justify-center items-center">
-                        <X className="h-6 w-6 cursor-pointer text-green-900" />
+                        <X className="h-6 w-6 cursor-pointer text-green-900 dark:text-green-400" />
                     </div>
                 }
                 pauseOnFocusLoss={false}
                 pauseOnHover={false}
             />
-            <div className="pt-8">
-                <div className="flex items-center">
-                    <ol className="flex w-full items-center overflow-hidden">
-                        <li className="text-body hover:text-heading px-2.5 text-sm transition duration-200 ease-in first:pl-0 last:pr-0">
-                            <a href="#">Home</a>
-                        </li>
-                        <li className="text-body mt-0.5 text-base">/</li>
-                        <li className="text-body hover:text-heading px-2.5 text-sm transition duration-200 ease-in first:pl-0 last:pr-0">
-                            <a className="capitalize" href="#">
-                                products
+            <div className="mx-auto max-w-7xl px-4 md:px-8 2xl:px-16 py-8">
+                <nav className="mb-8">
+                    <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li>
+                            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">
+                                Home
                             </a>
                         </li>
-                        <li className="text-body mt-0.5 text-base">/</li>
-                        <li className="text-body hover:text-heading px-2.5 text-sm transition duration-200 ease-in first:pl-0 last:pr-0">
-                            <a className="capitalize" href="#">
-                                {productDetails.category}
+                        <li>/</li>
+                        <li>
+                            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors capitalize">
+                                Products
                             </a>
+                        </li>
+                        <li>/</li>
+                        <li className="text-gray-900 dark:text-white font-medium capitalize">
+                            {productDetails.category}
                         </li>
                     </ol>
-                </div>
-            </div>
-            <div className="block grid-cols-9 items-start gap-x-10 pb-10 pt-7 lg:grid lg:pb-14 xl:gap-x-14 2xl:pb-20">
-                <div className="col-span-5 grid grid-cols-2 gap-2.5">
-                    {productDetails.images.map((item, index) => (
-                        <div key={index} className="col-span-2 transition duration-150 ease-in hover:opacity-90">
+                </nav>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+                    <div className="space-y-6">
+                        <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                             <img
-                                src={item}
-                                alt="Nike Air Max 95 By You--0"
-                                className="w-full"
+                                src={productDetails.images[selectedImageIndex]}
+                                alt={productDetails.title}
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                             />
                         </div>
-                    ))}
-                </div>
-                <div className="col-span-4 pt-8 lg:pt-0">
-                    <div className="mb-7 border-b border-gray-300 pb-7">
-                        <h2 className="text-heading mb-3.5 text-lg font-bold md:text-xl lg:text-2xl 2xl:text-3xl">
-                            {productDetails.title}
-                        </h2>
-                        <p className="text-body text-sm leading-6  lg:text-base lg:leading-8">
-                            {productDetails.description}
-                        </p>
-                        <div className="mt-5 flex items-center ">
-                            <div className="text-heading pr-2 text-base font-bold md:pr-0 md:text-xl lg:pr-2 lg:text-2xl 2xl:pr-0 2xl:text-4xl">
-                                ${productDetails.price}
+                        {productDetails.images.length > 1 && (
+                            <div className="grid grid-cols-4 gap-4">
+                                {productDetails.images.map((image, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedImageIndex(index)}
+                                        className={`aspect-square rounded-lg overflow-hidden transition-all duration-200 ${
+                                            selectedImageIndex === index
+                                                ? 'ring-2 ring-blue-500 dark:ring-blue-400'
+                                                : 'hover:opacity-75'
+                                        }`}
+                                    >
+                                        <img
+                                            src={image}
+                                            alt={`${productDetails.title} ${index + 1}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </button>
+                                ))}
                             </div>
-                            <span className="font-segoe pl-2 text-sm text-gray-400 line-through md:text-base lg:text-lg xl:text-xl">
-                                ${Math.floor((productDetails.price) / ((1 - ((productDetails.discountPercentage) / 100))))}
-                            </span>
-                        </div>
+                        )}
                     </div>
-                    <div className="border-b border-gray-300 pb-3  ">
-                        <div className="mb-4">
-                            <h3 className="text-heading mb-2.5 text-base font-semibold capitalize md:text-lg">
-                                size
-                            </h3>
-                            <ul className="colors -mr-3 flex flex-wrap">
+                    <div className="space-y-8">
+                        <div className="space-y-4">
+                            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+                                {productDetails.title}
+                            </h1>
+                            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {productDetails.description}
+                            </p>
+                            <div className="flex items-center space-x-2">
+                                <div className="flex items-center">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className={`w-5 h-5 ${
+                                                i < Math.floor(productDetails.rating)
+                                                    ? 'text-yellow-400 fill-current'
+                                                    : 'text-gray-300 dark:text-gray-600'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    ({productDetails.rating})
+                                </span>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <span className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+                                    ${productDetails.price}
+                                </span>
+                                {productDetails.discountPercentage > 0 && (
+                                    <>
+                                        <span className="text-xl text-gray-500 dark:text-gray-400 line-through">
+                                            ${originalPrice}
+                                        </span>
+                                        <span className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-2 py-1 rounded-full text-sm font-medium">
+                                            -{Math.round(productDetails.discountPercentage)}%
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Size</h3>
+                            <div className="flex flex-wrap gap-3">
                                 {['S', 'M', 'L', 'XL'].map((size) => (
-                                    <li
+                                    <button
                                         key={size}
-                                        className="text-heading mb-2 mr-2 flex h-9 w-9 cursor-pointer items-center justify-center rounded border border-gray-100 p-1 text-xs font-semibold uppercase transition duration-200 ease-in-out hover:border-black md:mb-3 md:mr-3 md:h-11 md:w-11 md:text-sm "
+                                        className="w-12 h-12 rounded-lg border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-semibold transition-all duration-200 hover:border-gray-900 dark:hover:border-white hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         {size}
-                                    </li>
+                                    </button>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
-                        <div className="mb-4 ">
-                            <h3 className="text-heading mb-2.5 text-base font-semibold capitalize md:text-lg">
-                                color
-                            </h3>
-                            <ul className="colors -mr-3 flex flex-wrap">
-                                {['bg-orange-400', 'bg-pink-400', 'bg-violet-600', 'bg-red-500'].map((color) => (
-                                    <li
-                                        key={color}
-                                        className="text-heading mb-2 mr-2 flex h-9 w-9 cursor-pointer items-center justify-center rounded border border-gray-100 p-1 text-xs font-semibold uppercase transition duration-200 ease-in-out hover:border-black md:mb-3 md:mr-3 md:h-11 md:w-11 md:text-sm"
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Color</h3>
+                            <div className="flex flex-wrap gap-3">
+                                {['bg-orange-400', 'bg-pink-400', 'bg-violet-600', 'bg-red-500'].map((color, index) => (
+                                    <button
+                                        key={index}
+                                        className="w-12 h-12 rounded-lg border-2 border-gray-300 dark:border-gray-600 transition-all duration-200 hover:border-gray-900 dark:hover:border-white hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
-                                        <span className={`block h-full w-full rounded ${color}`} />
-                                    </li>
+                                        <span className={`block w-full h-full rounded-md ${color}`} />
+                                    </button>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div className="space-s-4 3xl:pr-48 flex items-center gap-2 border-b border-gray-300 py-8  md:pr-32 lg:pr-12 2xl:pr-32">
-                        <div className="group flex h-11 flex-shrink-0 items-center justify-between overflow-hidden rounded-md border border-gray-300 md:h-12">
-                            <button
-                                onClick={() => {
-                                    if (itemQuantity > 1) setItemQuantity(itemQuantity - 1);
-                                }}
-                                className="hover:bg-gray-100 text-heading hover:bg-heading flex h-full w-10 flex-shrink-0 items-center justify-center border-e border-gray-300 transition duration-300 ease-in-out focus:outline-none md:w-12"
-                            >
-                                -
-                            </button>
-                            <span className="duration-250 text-heading flex h-full w-12  flex-shrink-0 cursor-default items-center justify-center text-base font-semibold transition-colors ease-in-out  md:w-20 xl:w-24">
-                                {itemQuantity}
-                            </span>
-                            <button
-                                onClick={() => { setItemQuantity(itemQuantity + 1) }}
-                                className="hover:bg-gray-100 text-heading hover:bg-heading flex h-full w-10 flex-shrink-0 items-center justify-center border-s border-gray-300 transition duration-300 ease-in-out focus:outline-none md:w-12">
-                                +
-                            </button>
-                        </div>
-                        <button
-                            onClick={() => { addItemToCart() }}
-                            type="button"
-                            className="h-11 w-full rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                        >
-                            Add to cart
-                        </button>
-                    </div>
-                    <div className="py-6 ">
-                        <ul className="space-y-5 pb-1 text-sm">
-                            <li>
-                                <span className="text-heading inline-block pr-2 font-semibold">SKU:</span>
-                                {productDetails.stock};
-                            </li>
-                            <li>
-                                <span className="text-heading inline-block pr-2 font-semibold">Category:</span>
-                                <a className="hover:text-heading transition hover:underline" href="#">
-                                    {productDetails.category}
-                                </a>
-                            </li>
-                            <li className="productTags">
-                                <span className="text-heading inline-block pr-2 font-semibold">Tags:</span>
-                                <a
-                                    className="hover:text-heading inline-block pr-1.5 transition last:pr-0 hover:underline"
-                                    href="#"
+                        <div className="flex items-center space-x-4">
+                            <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-lg">
+                                <button
+                                    onClick={() => {
+                                        if (itemQuantity > 1) setItemQuantity(itemQuantity - 1)
+                                    }}
+                                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    {productDetails.title} , {productDetails.category}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="shadow-sm ">
-                        <header className="flex cursor-pointer items-center justify-between border-t border-gray-300 py-5 transition-colors md:py-6">
-                            <h2 className="text-heading pr-2 text-sm font-semibold leading-relaxed md:text-base lg:text-lg">
-                                Product Details
-                            </h2>
-                            <div className="relative flex h-4 w-4 flex-shrink-0 items-center justify-center">
-                                <div className="bg-heading h-0.5 w-full rounded-sm" />
-                                <div className="bg-heading absolute bottom-0 h-full w-0.5 origin-bottom scale-0 transform rounded-sm transition-transform duration-500 ease-in-out" />
+                                    <Minus className="w-4 h-4" />
+                                </button>
+                                <span className="px-6 py-3 text-lg font-semibold text-gray-900 dark:text-white min-w-[4rem] text-center">
+                                    {itemQuantity}
+                                </span>
+                                <button
+                                    onClick={() => setItemQuantity(itemQuantity + 1)}
+                                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                </button>
                             </div>
-                        </header>
-                        <div>
-                            <div className="pb-6 text-sm leading-7 text-gray-600 md:pb-7">
-                                Our Customer Experience Team is available 7 days a week and we offer 2 ways to get
-                                in contact.Email and Chat . We try to reply quickly, so you need not to wait too
-                                long for a response!.
+                            <button
+                                onClick={addItemToCart}
+                                className="flex-1 bg-black dark:bg-white text-white dark:text-black font-semibold py-4 px-8 rounded-lg transition-all duration-200 hover:bg-gray-800 dark:hover:bg-gray-100 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg"
+                            >
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div className="space-y-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span className="font-semibold text-gray-900 dark:text-white">SKU:</span>
+                                    <span className="ml-2 text-gray-600 dark:text-gray-400">{productDetails.stock}</span>
+                                </div>
+                                <div>
+                                    <span className="font-semibold text-gray-900 dark:text-white">Category:</span>
+                                    <span className="ml-2 text-gray-600 dark:text-gray-400 capitalize">{productDetails.category}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="">
-                        <header className="flex cursor-pointer items-center justify-between border-t border-gray-300 py-5 transition-colors md:py-6">
-                            <h2 className="text-heading pr-2 text-sm font-semibold leading-relaxed md:text-base lg:text-lg">
-                                Additional Information
-                            </h2>
-                        </header>
-                    </div>
-                    <div className="">
-                        <header className="flex cursor-pointer items-center justify-between border-t border-gray-300 py-5 transition-colors md:py-6">
-                            <h2 className="text-heading pr-2 text-sm font-semibold leading-relaxed md:text-base lg:text-lg">
-                                Customer Reviews
-                            </h2>
-                        </header>
+                        <div className="space-y-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <details className="group">
+                                <summary className="flex cursor-pointer items-center justify-between py-4 text-lg font-semibold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                                    Product Details
+                                    <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
+                                </summary>
+                                <div className="pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    Our Customer Experience Team is available 7 days a week and we offer 2 ways to get
+                                    in contact. Email and Chat. We try to reply quickly, so you need not to wait too
+                                    long for a response!
+                                </div>
+                            </details>
+                            <details className="group">
+                                <summary className="flex cursor-pointer items-center justify-between py-4 text-lg font-semibold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors border-t border-gray-200 dark:border-gray-700">
+                                    Additional Information
+                                    <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
+                                </summary>
+                                <div className="pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    Additional product information and specifications will be displayed here.
+                                </div>
+                            </details>
+                            <details className="group">
+                                <summary className="flex cursor-pointer items-center justify-between py-4 text-lg font-semibold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors border-t border-gray-200 dark:border-gray-700">
+                                    Customer Reviews
+                                    <Plus className="w-5 h-5 transition-transform group-open:rotate-45" />
+                                </summary>
+                                <div className="pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    Customer reviews and ratings will be displayed here.
+                                </div>
+                            </details>
+                        </div>
                     </div>
                 </div>
             </div>
