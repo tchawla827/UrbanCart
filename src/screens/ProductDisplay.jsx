@@ -243,7 +243,7 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
         <div className="my-8 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"></div>
 
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-2 lg:sticky lg:top-24 space-y-6">
+          <div className="lg:col-span-2 sticky top-24 space-y-6">
             <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 p-6 shadow-lg backdrop-blur-sm">
               {filters.map((filter) => (
                 <div key={filter.id} className="space-y-4">
