@@ -5,7 +5,7 @@ import { CheckCircle, X, AlertTriangle } from 'lucide-react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useDispatch } from 'react-redux'
-import { addCategoryProducts, addProducts, removeCategoryProducts, sortByHighToLow, sortByLowToHigh, sortByRating } from '../redux/slices/products'
+import { addCategoryProducts, setProducts, removeCategoryProducts, sortByHighToLow, sortByLowToHigh, sortByRating } from '../redux/slices/products'
 
 const filters = [
   {
@@ -77,7 +77,7 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
     try {
       const response = await fetch('https://dummyjson.com/products?limit=0')
       const jsonData = await response.json()
-      dispatch(addProducts(jsonData.products))
+      dispatch(setProducts(jsonData.products))
     } catch (error) {
       console.error('Error fetching data:', error)
     }
@@ -308,3 +308,4 @@ function ProductDisplay({ cartItems, setCartItems, addToCart, categoryAdded, cat
 }
 
 export default ProductDisplay
+
