@@ -2,7 +2,7 @@ import React, { useContext, useState, useCallback } from 'react';
 import { Menu, X, ChevronRight, ShoppingCart, Sun, Moon, Search } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { addProducts } from '../redux/slices/products';
+import { setProducts } from '../redux/slices/products';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
 import { ThemeContext } from '../ThemeContext.jsx';
@@ -33,7 +33,7 @@ const Navbar = () => {
     try {
       const response = await fetch(`https://dummyjson.com/products/search?q=${query}&limit=0`);
       const jsonData = await response.json();
-      dispatch(addProducts(jsonData.products));
+      dispatch(setProducts(jsonData.products));
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -281,3 +281,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

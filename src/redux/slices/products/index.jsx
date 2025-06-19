@@ -6,8 +6,10 @@ export const productSlice = createSlice({
     },
     name: 'product',
     reducers: {
+        setProducts: (state, action) => {
+            state.products = action.payload;
+        },
         addProducts: (state, action) => {
-            console.log("addProducts working")
             state.products = action.payload;
         },
         addCategoryProducts: (state, action) => {
@@ -37,6 +39,7 @@ export const productSlice = createSlice({
 })
 
 export const {
+    setProducts,
     addProducts,
     addCategoryProducts,
     removeCategoryProducts,
@@ -45,3 +48,4 @@ export const {
     sortByRating
 } = productSlice.actions;
 export default productSlice.reducer
+
